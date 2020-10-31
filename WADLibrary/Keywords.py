@@ -3,6 +3,7 @@ from .Sessions import Sessions
 from .common.keys import keys
 from .common import execute
 import time
+from robot.api.deco import keyword
 
 
 class Keywords:
@@ -14,6 +15,7 @@ class Keywords:
         self.device_name = device_name
         self.timeout = timeout
 
+    @keyword
     def set_up(self):
         """Sets up a new session for WinAppDriver.
 
@@ -43,6 +45,7 @@ class Keywords:
         ses = self.get_session('Root')
         self.__current_session = ses
 
+    @keyword
     def clean_up(self):
         """Removes all sessions."""
         for_deletion = self.__sessions
@@ -51,6 +54,7 @@ class Keywords:
         for session in for_deletion:
             self.__sessions.remove(session)
 
+    @keyword
     def clean_up_session(self, name):
         """Removes a specific session.
 
@@ -62,14 +66,17 @@ class Keywords:
         self.delete_session(session.get_id())
         self.__sessions.remove(session)
 
+    @keyword
     def get_sessions(self):
         """Returns all sessions."""
         return self.__sessions
 
+    @keyword
     def get_current_session_id(self):
         """Returns currently active session."""
         return self.__current_session.get_id()
 
+    @keyword
     def get_session_ids(self):
         """Returns identifiers for all sessions."""
         ids = []
@@ -77,6 +84,7 @@ class Keywords:
             ids.append(session.get_id())
         return ids
 
+    @keyword
     def get_session(self, name):
         """Returns session for specified name.
 
@@ -88,12 +96,14 @@ class Keywords:
             if name == session.get_name():
                 return session
 
+    @keyword
     def get_session_by_id(self, session_id):
         """Returns session for specified id."""
         for session in self.__sessions:
             if session_id == session.get_id():
                 return session
 
+    @keyword
     def get_window_handle(self, using, value, session_id=None):
         """Searches for a window and returns a handle for it.
 
@@ -114,6 +124,7 @@ class Keywords:
         handle = hex(int(json_obj['value']))
         return handle
 
+    @keyword
     def attach_to_window(self, value, name, using='name', session_id=None):
         """ Finds a window, creates a new session for it and sets the window to the foreground.
 
@@ -137,6 +148,7 @@ class Keywords:
         self.__current_session = self._create_session(desired_caps, name)
         self.get_sessions()
 
+    @keyword
     def close_window(self, session_id=None):
         """Closes window of specified session.
 
@@ -151,6 +163,7 @@ class Keywords:
             session_id = self.get_current_session_id()
         execute.delete(self.path + '/session/' + session_id + '/window')
 
+    @keyword
     def maximize_window(self, session_id=None):
         """Maximizes window of specified session.
 
@@ -165,6 +178,7 @@ class Keywords:
             session_id = self.get_current_session_id()
         execute.post(self.path + '/session/' + session_id + '/window/maximize')
 
+    @keyword
     def minimize_window(self, session_id=None):
         """Minimizes window of specified session.
 
@@ -179,6 +193,7 @@ class Keywords:
             session_id = self.get_current_session_id()
         execute.post(self.path + '/session/' + session_id + '/window/minimize')
 
+    @keyword
     def delete_session(self, session_id):
         """Deletes specified session.
 
@@ -191,6 +206,7 @@ class Keywords:
         """
         execute.delete(self.path + '/session/' + session_id)
 
+    @keyword
     def set_current_session(self, name):
         """Sets specified session to active.
 
@@ -203,6 +219,7 @@ class Keywords:
         """
         self.__current_session = self.get_session(name)
 
+    @keyword
     def set_focus(self, session_id=None):
         """Sets a session's window to the foreground
         Arguments detailed:
@@ -223,6 +240,7 @@ class Keywords:
         json_obj = {'name': app_name}
         execute.post(self.path + '/session/' + session_id + '/window', json=json_obj)
 
+    @keyword
     def find_element(self, value, using='name', session_id=None):
         """Searches for element in the current session's window.
 
@@ -243,6 +261,7 @@ class Keywords:
         elem = json_obj['value']['ELEMENT']
         return elem
 
+    @keyword
     def find_element_children(self, *args, session_id=None):
         """
         Finds all children for specified chain of elements.
@@ -272,6 +291,7 @@ class Keywords:
         children = json_obj['value']
         return children
 
+    @keyword
     def find_child_element(self, *args, session_id=None):
         """
         Finds first child for specified chain of elements.
@@ -303,6 +323,7 @@ class Keywords:
         last_child = parent_elem
         return last_child
 
+    @keyword
     def click_child_recursively(self, *args, button='left', session_id=None):
         """
         Clicks first child for specified chain of elements.
@@ -326,6 +347,7 @@ class Keywords:
         self._move_to_element(elem, session_id)
         self._mouse_click(button, session_id)
 
+    @keyword
     def click_ith_child_element(self, *args, index=0, button='left', session_id=None):
 
         """
@@ -352,6 +374,7 @@ class Keywords:
         self._move_to_element(elem, session_id)
         self._mouse_click(button, session_id)
 
+    @keyword
     def double_click_child_recursively(self, *args, session_id=None):
         """
         Double clicks first child for specified chain of elements.
@@ -374,6 +397,7 @@ class Keywords:
         self._move_to_element(elem, session_id)
         self.double_click(session_id)
 
+    @keyword
     def double_click_ith_child_element(self, *args, index=0, session_id=None):
 
         """
@@ -399,6 +423,7 @@ class Keywords:
         self._move_to_element(elem, session_id)
         self.double_click(session_id)
 
+    @keyword
     def double_click(self, session_id=None):
         """Double clicks the left mouse button.
 
@@ -413,6 +438,7 @@ class Keywords:
             session_id = self.get_current_session_id()
         execute.post(self.path + '/session/' + session_id + '/doubleclick')
 
+    @keyword
     def double_click_element(self, value, using='name', session_id=None):
         """Double clicks specified element.
 
@@ -432,6 +458,7 @@ class Keywords:
         self._move_to_element(elem=elem, session_id=session_id)
         self.double_click(session_id=session_id)
 
+    @keyword
     def click_element(self, value, using='name', button='left', session_id=None):
         """Finds element and clicks on it.
 
@@ -451,6 +478,7 @@ class Keywords:
         self._move_to_element(elem=elem, session_id=session_id)
         self._mouse_click(button=button, session_id=session_id)
 
+    @keyword
     def move_mouse_to_element(self, value, using='name', session_id=None):
         """Moves mouse to specified element.
 
@@ -468,6 +496,7 @@ class Keywords:
         elem = self.find_element(value=value, using=using, session_id=session_id)
         self._move_to_element(elem=elem, session_id=session_id)
 
+    @keyword
     def move_mouse_to_last_child(self, *args, session_id=None):
         """Moves mouse to last element specified in a chain of elements.
 
@@ -488,6 +517,7 @@ class Keywords:
         child_elem = self.find_child_element(*args, session_id=session_id)
         self._move_to_element(elem=child_elem, session_id=session_id)
 
+    @keyword
     def keyboard_keys(self, value, session_id=None):
         """Sends specified keys as keyboard input.
 
@@ -503,6 +533,7 @@ class Keywords:
             session_id = self.get_current_session_id()
         execute.post(self.path + '/session/' + session_id + '/keys', json={'value': list(value)})
 
+    @keyword
     def send_key(self, value, session_id=None):
         """Sends a single keyboard key.
 
@@ -521,6 +552,7 @@ class Keywords:
 
         execute.post(self.path + '/session/' + session_id + '/keys', json={'value': [key]})
 
+    @keyword
     def enter_value(self, value, locator, using='name', session_id=None):
         """Inputs value to specified input element
 
@@ -540,6 +572,7 @@ class Keywords:
         execute.post(self.path + '/session/' + session_id + '/element/' + elem + '/value',
                      json={'value': list(value)})
 
+    @keyword
     def is_element_enabled(self, value, using='name', session_id=None):
         """Checks whether or not an element is enabled.
 
@@ -562,6 +595,7 @@ class Keywords:
         enabled = json_obj['value']
         return enabled
 
+    @keyword
     def get_element_attribute(self, locator, attribute='Name', using='name', session_id=None):
         """Retrieves the value of an element's attribute.
 
@@ -587,6 +621,7 @@ class Keywords:
         attribute = json_obj['value']
         return attribute
 
+    @keyword
     def get_element_value(self, locator, using='name', session_id=None):
         """Retrieves the value of an element.
 
@@ -602,6 +637,7 @@ class Keywords:
         value = self.get_element_attribute(locator=locator, attribute='Value.Value', using=using, session_id=session_id)
         return value
 
+    @keyword
     def get_child_element_attribute(self, *args, child_attribute='Value.Value',
                                     session_id=None):
         """
@@ -630,6 +666,7 @@ class Keywords:
     # Waiting functions
     ####################################################################################################################
 
+    @keyword
     def wait_until_element_is_visible(self, locator, using='name', timeout=None, error=None, session_id=None):
         """Waits until element with specified locator is visible.
 
@@ -659,6 +696,7 @@ class Keywords:
 
         self._wait_until_no_error(timeout, check_visibility)
 
+    @keyword
     def wait_until_element_is_not_visible(self, locator, using='name', timeout=None, error=None, session_id=None):
         """Waits until element with specified locator is not visible.
 
@@ -688,6 +726,7 @@ class Keywords:
 
         self._wait_until_no_error(timeout, check_visibility)
 
+    @keyword
     def wait_until_child_element_is_visible(self, *args, timeout=None, error=None, session_id=None):
         """Waits until element and all of its children are visible.
 
@@ -721,6 +760,7 @@ class Keywords:
 
         self._wait_until_no_error(timeout, check_visibility)
 
+    @keyword
     def wait_until_child_element_is_not_visible(self, *args, timeout=None, error=None, session_id=None):
         """Waits until one of the specified elements in arguments is not visible.
 
@@ -754,6 +794,7 @@ class Keywords:
 
         self._wait_until_no_error(timeout, check_visibility)
 
+    @keyword
     def wait_until_element_is_enabled(self, locator, using='name', timeout=None, error=None, session_id=None):
         """Waits until element with specified locator is found/visible and enabled.
 
@@ -783,6 +824,7 @@ class Keywords:
 
         self._wait_until_no_error(timeout, check_enabled)
 
+    @keyword
     def wait_until_element_is_not_enabled(self, locator, using='name', timeout=None, error=None, session_id=None):
         """Waits until element with specified locator is found/visible and not enabled.
 
@@ -812,6 +854,7 @@ class Keywords:
 
         self._wait_until_no_error(timeout, check_enabled)
 
+    @keyword
     def wait_until_element_has_value(self, locator, value, using='name', timeout=None, error=None, session_id=None):
         """Waits until element has a specific value.
 
